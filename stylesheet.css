@@ -1,0 +1,16 @@
+html {
+    margin-left: 1px;
+}
+
+fieldset {
+    width: 80%;
+}
+
+td {
+    padding: 50px
+}
+
+div {
+    width: 50%;
+    margin-left: 5%;
+}
