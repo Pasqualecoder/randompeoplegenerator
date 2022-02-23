@@ -27,10 +27,83 @@
     <a href="index.html">
       <button>torna indietro</button>
     </a>
+    <a href="#tabella">
+      <button>vai alla tabella</button>
+    </a>
     
     <?php
-      //var_dump($_POST);
+      class Persona {
+        // consider using an array
+        public $n = 0; public $gender; public $firstname; 
+        public $lastname; public $city; public $postcode; 
+        public $country; public $birth; public $email; 
+        public $username; public $password; public $SHA1; 
+        public $phone; public $photo;
+
+        function __construct($n, $gender, $firstname, $lastname, $city, $postcode, $country, $birth, $email, $username, $password, $SHA1, $phone, $photo) {
+          $this -> n = $n;
+          $this -> gender = $gender;
+          $this -> firstname = $firstname;
+          $this -> lastname = $lastname;
+          $this -> city = $city;
+          $this -> postcode = $postcode;
+          $this -> country = $country;
+          $this -> birth = $birth;
+          $this -> email = $email;
+          $this -> username = $username;
+          $this -> password = $password;
+          $this -> SHA1 = $SHA1;
+          $this -> phone = $phone;
+          $this -> photo = $photo;
+        }
+      }
+
+      function stampa_resoconto($persone)
+      {
+        echo "<h1 class=\"display-1\">Resoconto</h1>";
+        echo "<table class=\"table table-striped table-hover table-bordered\" style=\"display: block; overflow-x: auto; white-space: nowrap;\"><thead><tr>";
+        echo "<th scope=\"col\">#</th>
+        <th scope=\"col\">First Name</th>
+        <th scope=\"col\">Last Name</th>
+        <th scope=\"col\">Gender</th>
+        <th scope=\"col\">City</th>
+        <th scope=\"col\">Postcode</th>
+        <th scope=\"col\">Country</th>
+        <th scope=\"col\">Birth</th>
+        <th scope=\"col\">Email</th>
+        <th scope=\"col\">Username</th>
+        <th scope=\"col\">Password</th>
+        <th scope=\"col\">SHA1</th>
+        <th scope=\"col\">Phone</th>
+        <th scope=\"col\">Photo</th></tr></thead>
+        <tbody>";
+
+        foreach ($persone as $persona) {
+          echo "<tr>
+            <th scope=\"row\">". (($persona -> n)+1). "</th>
+            <td>". ($persona -> firstname). "</td>
+            <td>". ($persona -> lastname). "</td>
+            <td>". ($persona -> gender). "</td>
+            <td>". ($persona -> city). "</td>
+            <td>". ($persona -> postcode). "</td>
+            <td>". ($persona -> country). "</td>
+            <td>". ($persona -> birth). "</td>
+            <td>". ($persona -> email). "</td>
+            <td>". ($persona -> username). "</td>
+            <td>". ($persona -> password). "</td>
+            <td>". ($persona -> SHA1). "</td>
+            <td>". ($persona -> phone). "</td>
+            <td><a href=\"". ($persona -> photo) ."\">" . ($persona -> photo) . "</a></td>
+          </tr>";
+        }
+        
+        echo "</tbody>
+        </table>";
+      }
+    
       
+      //var_dump($_POST);
+
       $address = $_POST["address"];
       $username = $_POST["username"];
       $password = $_POST["password"];
@@ -40,7 +113,8 @@
       require("connessionedb.php");
       
       $scelta = isset($_POST["scelta"]) ? $_POST["scelta"] : null;
-      
+      $personegenerate = [];
+
       if ($scelta == "delete") {
         $query = "DELETE FROM $tablename WHERE ID > 0";
         if (mysql_query($query, $conn)) {
@@ -83,9 +157,9 @@
           $email = mysql_real_escape_string($email);
           $password = mysql_real_escape_string($password);
 
+          $personegenerate[] = new Persona($i, $gender, $firstname, $lastname, $city, $postcode, $country, $birth, $email, $username, $password, $SHA1, $phone, $photo);
           
           echo "<h1>Persona " . ($i+1) . "</h1>";
-
           echo "<table><tr><td><table class=\"table table-primary table-bordered\" style=\"width: 50%;\">";
 
           echo "<tr><th>firstname</th>";
@@ -130,7 +204,7 @@
 
           $strSQL = "INSERT INTO $tablename (gender, firstname, lastname, city, postcode, country, birth, email, username, password, SHA1, phone, photo)";
           $strSQL .= "VALUES ('$gender', '$firstname', '$lastname', '$city', '$postcode', '$country', '$birth', '$email', '$username', '$password', '$SHA1', '$phone', '$photo');";
-          echo $strSQL;
+          echo "<h5 class=\"display-10\"><small class=\"text-muted\">" . $strSQL . "</small></h5>";
       
           if (mysql_query($strSQL, $conn)) {
             echo "<h3 style=\"color: green;\">OK</h3>";
@@ -140,6 +214,10 @@
           }
           echo "<br><br><br>";
         }
+
+        // RESOCONTO
+        echo "<a name=\"tabella\"></a>";
+        echo stampa_resoconto($personegenerate);
       }
     
       else if ($scelta == "run") {
@@ -150,11 +228,10 @@
           die();
         }
       }
-      
-      echo "<h1>end</h1>";
+
+
       
       mysql_close($conn);
-    
     ?>
     
     <br><br>
