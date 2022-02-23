@@ -29,12 +29,20 @@
     </a>
     
     <?php
+      //var_dump($_POST);
+      
+      $address = $_POST["address"];
+      $username = $_POST["username"];
+      $password = $_POST["password"];
+      $nomedb = $_POST["nomedb"];
+      $tablename = $_POST["tablename"];
+
       require("connessionedb.php");
-    
-      $scelta = isset($_GET["scelta"]) ? $_GET["scelta"] : null;
+      
+      $scelta = isset($_POST["scelta"]) ? $_POST["scelta"] : null;
       
       if ($scelta == "delete") {
-        $query = "DELETE FROM users WHERE ID > 0";
+        $query = "DELETE FROM $tablename WHERE ID > 0";
         if (mysql_query($query, $conn)) {
           echo "<h1>Eliminazione completata</h1>";
         } else {
@@ -44,7 +52,7 @@
       }
       
       else if ($scelta == "gen") {
-        $iterazioni = isset($_GET["gen"]) ? $_GET["gen"] : null;
+        $iterazioni = isset($_POST["gen"]) ? $_POST["gen"] : null;
         $json = file_get_contents("https://randomuser.me/api/?nat=au,ca,es,fr,us,gb&results=$iterazioni");
         $user = json_decode($json);
         
@@ -117,10 +125,10 @@
           echo "<td>$phone</td></tr>";
           echo "</table></td>";
 
-          echo "<td><img src=$photo alt=1 style=\"width: 500px;\"></td></tr></table>";
+          echo "<td><img src=$photo alt=1 style=\"width: 300px;\"></td></tr></table>";
       
 
-          $strSQL = "INSERT INTO users (gender, firstname, lastname, city, postcode, country, birth, email, username, password, SHA1, phone, photo)";
+          $strSQL = "INSERT INTO $tablename (gender, firstname, lastname, city, postcode, country, birth, email, username, password, SHA1, phone, photo)";
           $strSQL .= "VALUES ('$gender', '$firstname', '$lastname', '$city', '$postcode', '$country', '$birth', '$email', '$username', '$password', '$SHA1', '$phone', '$photo');";
           echo $strSQL;
       
@@ -135,7 +143,7 @@
       }
     
       else if ($scelta == "run") {
-        if (mysql_query($_GET["run"], $conn)) {
+        if (mysql_query($_POST["run"], $conn)) {
           echo "<h3 style=\"color: green;\">OK</h3>";
         } else {
           echo "Errore nell'inserimento: " . mysql_error();

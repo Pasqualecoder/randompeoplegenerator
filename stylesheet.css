@@ -4,9 +4,14 @@ html {
 
 fieldset {
     width: 80%;
+    background-color: gainsboro;
 }
 
-td {
+fieldset.info {
+    width: 100%;
+}
+
+td.risultati {
     padding: 50px
 }
 
